@@ -3,44 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign up | FoundIt AI</title>
+    <title>Sign Up | FoundIt AI</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body id="signupPage" style="margin: 0%; display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;">
-    <!-- main div -->
-    <div style="display:flex; flex-direction:column; align-items:center; gap:25px;
-        min-height:400px; width:420px; background-color:#ffffff; border-radius:25px; 
-        box-shadow:0 10px 25px rgba(0,0,0,0.15); padding:30px;">
-        
-        <!-- heading -->
-        <h1 style="color:#086bb8; margin:0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-            Sign up
-        </h1>
 
-        <!-- email -->
-        <input type="text" id="email" name="email" placeholder="Enter your email" 
-            style="width:100%; padding:14px; font-size:16px; border-radius:8px; border:2px solid #cbd5e1; outline:none;" required>
+<body id="signupPage">
+    <button class="back-button back-button-fixed" id="backBtn" title="Go Back">⬅️ Back</button>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Sign Up</h1>
 
-        <!-- password -->
-        <input type="password" id="password" name="password" placeholder="Enter your password" 
-            style="width:100%; padding:14px; font-size:16px; border-radius:8px; border:2px solid #cbd5e1; outline:none;" required>
-        
-        <!-- confirm password -->
-        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" 
-            style="width:100%; padding:14px; font-size:16px; border-radius:8px; border:2px solid #cbd5e1; outline:none;" required>
+            <form id="signupForm" class="auth-form">
+                <input type="email" id="email" name="email" placeholder="Enter your email" class="auth-input" required>
 
-        <!-- submitbutton -->
-        <button type="submit" 
-            style="width:130px; height:50px; border:2px solid #8e9398; border-radius:8px; 
-            background-color:#ffffff; font-size:medium; font-weight: bold; cursor:pointer; 
-            transition: all 0.25s ease; " 
-            onmouseover="this.style.backgroundColor='#3A9CF0'; this.style.transform='scale(1.05)'" 
-            onmouseout="this.style.backgroundColor='#ffffff'; this.style.transform='scale(1)'">
-            Submit
-        </button>
+                <input type="password" id="password" name="password" placeholder="Enter your password" class="auth-input" required>
 
-        <!-- sign in link -->
-        <a href="#" style="text-decoration:none; color:#000000; font-size:14px;" onmouseover="this.style.color='#086bb8'" onmouseout="this.style.color='#000000'">Already have an account? Sign In</a>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" class="auth-input" required>
+
+                <button type="submit" class="btn-submit">Submit</button>
+
+                <a href="signin.html" class="auth-link">Already have an account? Sign In</a>
+            </form>
+        </div>
     </div>
     <script src="main.js"></script>
 </body>

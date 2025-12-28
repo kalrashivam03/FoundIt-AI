@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Lost Item | FoundIt AI</title>
+    <title>Found Items Gallery | FoundIt AI</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body id="lostPage">
+<body id="galleryPage">
     <nav class="navbar">
         <div class="navbar-left">
             <button class="back-button" id="backBtn" title="Go Back">⬅️</button>
@@ -31,35 +31,26 @@
                     <div class="notification-empty">No notifications yet</div>
                 </div>
             </div>
-            <a href="gallery.html" class="btn-nav">Gallery</a>
+            <a href="home.html" class="btn-nav">Home</a>
             <a href="signin.html" class="btn-nav">Sign In</a>
             <a href="signup.html" class="btn-nav">Sign Up</a>
         </div>
     </nav>
 
-    <div class="auth-container">
-        <div class="auth-card" style="max-width: 500px;">
-            <h1 class="auth-title">Report Lost Item</h1>
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <h1>Found Items Gallery</h1>
+            <p>Browse all found items. Click on any item to see more details.</p>
+        </div>
 
-            <form id="lostForm" class="auth-form">
-                <input type="text" id="itemName" name="itemName" placeholder="Item name" class="auth-input" required>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Items will be loaded here dynamically -->
+        </div>
 
-                <textarea id="description" name="description" placeholder="Description" class="auth-input" rows="3" required></textarea>
-
-                <input type="text" id="location" name="location" placeholder="Last seen location" class="auth-input" required>
-
-                <input type="datetime-local" id="lostDate" name="lostDate" class="auth-input" required>
-
-                <input type="tel" id="contact" name="contact" placeholder="Contact number" class="auth-input" required>
-
-                <div class="file-upload">
-                    <label for="itemImage" class="file-label">Upload Item Image (Optional) - AI will analyze for better matching</label>
-                    <input type="file" id="itemImage" name="itemImage" accept="image/*" class="auth-input file-input">
-                    <div id="imagePreview" class="image-preview"></div>
-                </div>
-
-                <button type="submit" class="btn-submit">Submit Report</button>
-            </form>
+        <div class="gallery-empty" id="galleryEmpty">
+            <h3>No found items yet</h3>
+            <p>Be the first to report a found item!</p>
+            <a href="found.html" class="btn-primary">Report Found Item</a>
         </div>
     </div>
 
