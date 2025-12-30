@@ -315,40 +315,34 @@ function initFoundPage() {
     }
 }
 
-function handleFoundFormSubmit(event) {
+async function handleFoundFormSubmit(event) {
     event.preventDefault();
+    const formData = new FormData(event.target); // contains text + file
 
-    const formData = new FormData(event.target);
-    const imageFile = formData.get('itemImage');
+    try {
+        const response = await fetch('http://localhost:5000/api/items/found', {
+            method: 'POST',
+            body: formData, // send the actual FormData
+            // NOTE: Do NOT set Content-Type header manually; browser sets multipart/form-data automatically
+        });
 
-    const foundItem = {
-        id: Date.now(),
-        type: 'found',
-        itemName: formData.get('itemName'),
-        description: formData.get('description'),
-        location: formData.get('location'),
-        date: formData.get('foundDate'),
-        contact: formData.get('contact'),
-        image: imageFile ? URL.createObjectURL(imageFile) : null,
-        timestamp: new Date().toISOString()
-    };
-
-    // Save to localStorage
-    const foundItems = getData('foundItems') || [];
-    foundItems.push(foundItem);
-    saveData('foundItems', foundItems);
-
-    alert('Found item reported successfully! AI analysis will help match it with lost items.');
-    event.target.reset();
-
-    // Clear preview
-    document.getElementById('imagePreview').style.display = 'none';
-    const results = document.querySelector('.analysis-results');
-    if (results) results.remove();
-
-    // Check for immediate matches
-    checkForMatches();
+        const result = await response.json();
+        if(result.success) {
+            alert('Found item reported successfully!');
+            console.log('Matches:', result.matches);
+            event.target.reset();
+            const results = document.querySelector('.analysis-results');
+            if (results) results.remove();
+            document.getElementById('imagePreview').style.display = 'none';
+        } else {
+            alert('Error reporting item: ' + result.error);
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Server error: ' + err.message);
+    }
 }
+
 
 // --------------------------------
 // Sign In Page Logic
