@@ -13,6 +13,9 @@ app.use(express.json());
 // serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// serve frontend static files
+app.use(express.static(path.join(__dirname, "../Frontend"), { index: 'home.html' }));
+
 // routes
 app.use("/api/items", itemRoutes);
 

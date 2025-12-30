@@ -42,7 +42,15 @@ To enable AI image recognition, you need to set up Google Vision API:
 
 ### 2. Running the Application
 
-Simply open `home.html` in your web browser. No server required for the demo.
+1. **Start the Backend Server**:
+   ```bash
+   cd Backend
+   node main.js
+   ```
+
+2. **Open in Browser**:
+   - Navigate to `http://localhost:5000`
+   - The home page will load automatically
 
 ### 3. How It Works
 
@@ -118,7 +126,12 @@ If the API key is not configured, the app falls back to mock data for demonstrat
 
 ## File Structure
 
-```
+```Backend/
+├── main.js                # Express server
+├── package.json           # Node.js dependencies
+├── routes/
+│   └── item.routes.js     # API routes for items
+└── uploads/               # Uploaded images storage
 Frontend/
 ├── home.html              # Landing page
 ├── gallery.html           # Found items gallery

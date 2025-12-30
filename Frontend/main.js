@@ -165,6 +165,10 @@ function detectPage() {
             initItemDetailPage();
             break;
 
+        case "matchDetailPage":
+            initMatchDetailPage();
+            break;
+
         case "signinPage":
             initSignInPage();
             break;
@@ -516,6 +520,125 @@ function showItemNotFound() {
     `;
 }
 
+// --------------------------------
+// Match Detail Page Logic
+// --------------------------------
+function initMatchDetailPage() {
+    console.log("Match detail page logic initialized");
+    loadMatchDetails();
+}
+
+function loadMatchDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const notificationId = urlParams.get('id');
+
+    if (!notificationId) {
+        showMatchNotFound();
+        return;
+    }
+
+    const notifications = getData('notifications') || [];
+    const notification = notifications.find(n => n.id == notificationId);
+
+    if (!notification) {
+        showMatchNotFound();
+        return;
+    }
+
+    displayMatchDetails(notification);
+}
+
+function displayMatchDetails(notification) {
+    const container = document.getElementById('matchDetailContainer');
+
+    const lostItem = notification.lostItem;
+    const foundItem = notification.foundItem;
+
+    const lostImageHtml = lostItem.image
+        ? `<img src="${lostItem.image}" alt="${lostItem.itemName}">`
+        : '<div style="font-size: 4rem;">📦</div>';
+
+    const foundImageHtml = foundItem.image
+        ? `<img src="${foundItem.image}" alt="${foundItem.itemName}">`
+        : '<div style="font-size: 4rem;">🔍</div>';
+
+    container.innerHTML = `
+        <div class="match-detail-header">
+            <h1>Potential Match Found!</h1>
+            <p>We've found a potential match for your lost item. Please review the details below and contact the finder to arrange pickup.</p>
+        </div>
+
+        <div class="match-detail-cards">
+            <div class="match-item-card">
+                <h2>Your Lost Item</h2>
+                <div class="item-detail-image">
+                    ${lostImageHtml}
+                </div>
+                <div class="item-detail-content">
+                    <h3>${lostItem.itemName}</h3>
+                    <p>${lostItem.description}</p>
+                    <div class="item-detail-grid">
+                        <div class="detail-item">
+                            <h4>Location Lost</h4>
+                            <p>${lostItem.location}</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Date Lost</h4>
+                            <p>${formatDate(lostItem.date)}</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Your Contact</h4>
+                            <p>${lostItem.contact}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="match-item-card">
+                <h2>Found Item Match</h2>
+                <div class="item-detail-image">
+                    ${foundImageHtml}
+                </div>
+                <div class="item-detail-content">
+                    <h3>${foundItem.itemName}</h3>
+                    <p>${foundItem.description}</p>
+                    <div class="item-detail-grid">
+                        <div class="detail-item">
+                            <h4>Location Found</h4>
+                            <p>${foundItem.location}</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Date Found</h4>
+                            <p>${formatDate(foundItem.date)}</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Finder's Contact</h4>
+                            <p>${foundItem.contact}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="match-actions">
+            <a href="tel:${foundItem.contact}" class="btn-success">📞 Contact Finder</a>
+            <a href="mailto:${foundItem.contact}" class="btn-primary">✉️ Email Finder</a>
+            <a href="home.html" class="btn-secondary">⬅️ Back to Home</a>
+        </div>
+    `;
+}
+
+function showMatchNotFound() {
+    const container = document.getElementById('matchDetailContainer');
+    container.innerHTML = `
+        <div class="match-detail-header">
+            <h1 style="color: #ef4444;">Match Not Found</h1>
+            <p>The match you're looking for doesn't exist or may have been removed.</p>
+            <a href="home.html" class="btn-secondary">⬅️ Back to Home</a>
+        </div>
+    `;
+}
+
 // Utility function to format dates
 function formatDate(dateString) {
     if (!dateString) return 'Unknown';
@@ -617,10 +740,13 @@ function checkForMatches() {
     const foundItems = getData('foundItems') || [];
     const notifications = getData('notifications') || [];
 
+    console.log('Checking for matches:', { lostItems: lostItems.length, foundItems: foundItems.length });
+
     // Simple matching algorithm based on item name and description similarity
     lostItems.forEach(lostItem => {
         foundItems.forEach(foundItem => {
             if (isPotentialMatch(lostItem, foundItem)) {
+                console.log('Match found:', lostItem.itemName, 'vs', foundItem.itemName);
                 // Check if notification already exists
                 const existingNotification = notifications.find(n =>
                     n.lostItemId === lostItem.id && n.foundItemId === foundItem.id
@@ -718,7 +844,10 @@ function updateNotificationDisplay() {
             notifications.slice(0, 10).forEach(notification => {
                 const item = document.createElement('div');
                 item.className = `notification-item ${notification.read ? '' : 'unread'}`;
-                item.onclick = () => markAsRead(notification.id);
+                item.onclick = () => {
+                    markAsRead(notification.id);
+                    window.location.href = `match-detail.html?id=${notification.id}`;
+                };
 
                 item.innerHTML = `
                     <h4>${notification.message}</h4>
@@ -758,6 +887,63 @@ function formatTimeAgo(timestamp) {
 // --------------------------------
 // Temporary Data Storage (MVP)
 // --------------------------------
+
+// Sample data for testing
+function populateSampleData() {
+    // Only add if no data exists
+    if (!getData('lostItems') || getData('lostItems').length === 0) {
+        const sampleLostItems = [
+            {
+                id: Date.now() - 1000,
+                itemName: "iPhone 12",
+                description: "Black iPhone 12 with cracked screen",
+                location: "Library",
+                date: "2024-12-25",
+                contact: "john@example.com",
+                timestamp: new Date().toISOString(),
+                image: null
+            },
+            {
+                id: Date.now() - 2000,
+                itemName: "Blue Backpack",
+                description: "Blue Nike backpack with books inside",
+                location: "Cafeteria",
+                date: "2024-12-24",
+                contact: "jane@example.com",
+                timestamp: new Date().toISOString(),
+                image: null
+            }
+        ];
+        saveData('lostItems', sampleLostItems);
+    }
+
+    if (!getData('foundItems') || getData('foundItems').length === 0) {
+        const sampleFoundItems = [
+            {
+                id: Date.now() - 1500,
+                itemName: "iPhone 12 Pro",
+                description: "Black iPhone found on the ground",
+                location: "Library entrance",
+                date: "2024-12-25",
+                contact: "finder1@example.com",
+                timestamp: new Date().toISOString(),
+                image: null
+            },
+            {
+                id: Date.now() - 2500,
+                itemName: "Blue Backpack",
+                description: "Blue backpack left at cafeteria table",
+                location: "Cafeteria",
+                date: "2024-12-24",
+                contact: "finder2@example.com",
+                timestamp: new Date().toISOString(),
+                image: null
+            }
+        ];
+        saveData('foundItems', sampleFoundItems);
+    }
+}
+
 function saveData(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
 }
@@ -769,6 +955,9 @@ function getData(key) {
 // Initialize everything when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
     console.log("FoundIt AI loaded successfully");
+
+    // Add sample data for testing (remove in production)
+    populateSampleData();
 
     detectPage();
     initNotifications();
